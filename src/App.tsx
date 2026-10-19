@@ -19,7 +19,6 @@ import WeekViewPage      from './pages/weekview/WeekViewPage'
 import LoadingSpinner    from './components/ui/LoadingSpinner'
 import ProjectedPage from './pages/projected/ProjectedPage'
 import SettingsPage from './pages/settings/SettingsPage'
-import FundsPage from './pages/funds/FundsPage'
 
 
 // ── Protected Route ────────────────────────────────────────────────────────
@@ -137,15 +136,6 @@ export default function App() {
         element={
           <ProtectedRoute>
             <AppLayout><WeekViewPage /></AppLayout>
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/funds"
-        element={
-          <ProtectedRoute>
-            <AppLayout><FundsPage /></AppLayout>
           </ProtectedRoute>
         }
       />

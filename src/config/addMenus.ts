@@ -1,7 +1,7 @@
 ﻿import {
   TrendingDown, TrendingUp, Target, RefreshCw, Upload, Download,
   Calendar, Filter, CircleDollarSign, Pencil, Check, LayoutGrid,
-  BarChart2, Mail, Globe, User, Wallet, PiggyBank, type LucideIcon,
+  BarChart2, Mail, Globe, User, Wallet, type LucideIcon,
 } from 'lucide-react'
 
 export type OptionAction = 'navigate' | 'coming_soon' | 'run_rules' | 'pending'
@@ -93,16 +93,6 @@ export const MENUS: Record<string, PageMenu> = {
       { icon: Target, color: 'accent',  label: 'Savings goal',    desc: 'Reach an amount',           action: 'pending',    pendingId: 'goal:open-add'        },
       { icon: Wallet, color: 'info',    label: 'Contribute',      desc: 'Add money to a goal',       action: 'pending',    pendingId: 'goal:open-contribute'  },
       { icon: Check,  color: 'warning', label: 'Fully fund goal', desc: 'Cover the full target now', action: 'pending',    pendingId: 'goal:open-fully-fund'    },
-    ],
-  },
-
-  '/funds': {
-    title: 'Sinking funds',
-    sub:   'Save up for the big irregular bills',
-    options: [
-      { icon: PiggyBank, color: 'accent',   label: 'New fund',      desc: 'Save toward a future cost', action: 'pending', pendingId: 'fund:open-add'       },
-      { icon: Wallet,    color: 'info',     label: 'Set aside',     desc: "Add this period's amount",  action: 'pending', pendingId: 'fund:open-set-aside' },
-      { icon: Check,     color: 'positive', label: 'Record payout', desc: 'Pay a bill from a fund',    action: 'pending', pendingId: 'fund:open-payout'    },
     ],
   },
 
