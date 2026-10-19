@@ -2,7 +2,7 @@ import { NavLink, useNavigate }  from 'react-router-dom'
 import {
   LayoutDashboard, TrendingDown, TrendingUp,
   Target, Trophy, CalendarDays, RefreshCw,
-  Tag, BarChart2, LineChart, Settings, PiggyBank,
+  Tag, BarChart2, LineChart, Settings,
   Moon, Sun, LogOut, ChevronDown,
 } from 'lucide-react'
 import { useAuthStore }    from '../../store/authStore'
@@ -36,7 +36,6 @@ const NAV_GROUPS = [
     label: 'Planning',
     items: [
       { to: '/goals',      icon: Trophy,    label: 'Goals'         },
-      { to: '/funds',      icon: PiggyBank, label: 'Sinking Funds' },
       { to: '/categories', icon: Tag,       label: 'Categories'    },
     ],
   },

@@ -398,10 +398,20 @@ export const useDeleteProjectedCost = () => {
 //   payout     — creates NO expense, so net balance genuinely does not move
 //                and dashboard/analytics are left alone. A payout that had
 //                to top up DID create an expense, hence the conditional.
+//
+// Disabled while the funds module is out of scope. The backend does not
+// serve /api/v1/sinking-funds on main (it is on feat/sinking-funds, pending
+// a change request), and Week View calls this hook, so leaving it enabled
+// put a 404 on every visit to one of the design's eleven screens. With the
+// query off, the hook returns an empty list and the funds sections render
+// nothing. Re-enable together with the backend module.
+export const SINKING_FUNDS_ENABLED = false
+
 export const useSinkingFunds = (includeInactive = false) =>
   useQuery({
     queryKey: [...QUERY_KEYS.sinkingFunds, includeInactive],
     queryFn:  () => fundsApi.getSinkingFunds(includeInactive),
+    enabled:  SINKING_FUNDS_ENABLED,
   })
 
 export const useFundActivity = (id: string | null) =>

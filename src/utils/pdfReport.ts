@@ -90,7 +90,7 @@ export async function generateMonthlyReport(data: ReportData): Promise<void> {
   doc.setTextColor(...white)
   doc.setFontSize(22)
   doc.setFont('helvetica', 'bold')
-  doc.text('Budget Tracker', margin, 18)
+  doc.text('BackendFinance', margin, 18)
 
   // Subtitle
   doc.setFontSize(10)
@@ -389,7 +389,7 @@ export async function generateMonthlyReport(data: ReportData): Promise<void> {
     doc.setFontSize(7)
     doc.setFont('helvetica', 'normal')
     doc.text(
-      `Budget Tracker  ·  ${data.monthName} ${data.year}`,
+      `BackendFinance  ·  ${data.monthName} ${data.year}`,
       margin + 2,
       pageH - 4
     )

@@ -1,163 +1,117 @@
-# Budget Tracker — Frontend
+# BackendFinance — Frontend
 
-React single-page application for the Budget Tracker personal finance app.
+React single-page application for the BackendFinance personal finance app.
+It talks to the API in
+[`backendtrash/BackendFinanceApp`](https://github.com/backendtrash/BackendFinanceApp).
 
 ## Tech Stack
 
 - **Framework:** React 19 + Vite 8
 - **Language:** TypeScript 6 (strict mode)
-- **Styling:** TailwindCSS 4
-- **State:** Zustand (auth + theme)
-- **Server State:** TanStack Query v5
-- **HTTP:** Axios with JWT interceptor + refresh logic
-- **Charts:** Recharts
-- **Icons:** Lucide React
-- **PDF:** jsPDF + jspdf-autotable
-- **Deploy:** Vercel
+- **Styling:** TailwindCSS 4, design tokens in `src/index.css`
+  (design proposal A, *Refined Classic*, with its dark variant)
+- **State:** Zustand (auth, theme, preferences)
+- **Server state:** TanStack Query v5
+- **HTTP:** Axios with JWT interceptor and refresh
+- **Charts:** Recharts · **Icons:** Lucide React · **PDF:** jsPDF
 
-## Project Structure
+## Running it
+
+You need Node 20 or newer, and the backend running locally.
+
+```bash
+git clone https://github.com/backendtrash/FrontendFinanceApp.git
+cd FrontendFinanceApp
+
+# pnpm via corepack, which ships with Node — no global install needed
+corepack pnpm install --frozen-lockfile
+
+# Optional: only needed to point at an API other than localhost:8000
+cp .env.example .env.local
+
+corepack pnpm dev
+# http://localhost:5173
+```
+
+Start the API first (see the backend README): `uvicorn app.main:app --port 8000`.
+Without `VITE_API_BASE_URL`, the app sends requests to `http://localhost:8000`.
+
+```bash
+corepack pnpm build     # type check (tsc -b) + production build
+corepack pnpm preview   # serve the build
+corepack pnpm lint
+```
+
+## Screens
+
+The eleven screens of the design, all behind authentication, all in the
+sidebar:
+
+| Route | Screen |
+|---|---|
+| `/dashboard` | Dashboard |
+| `/expenses` | Expenses |
+| `/earnings` | Earnings |
+| `/weeks` | Week view |
+| `/budgets` | Budgets |
+| `/recurring` | Recurring |
+| `/projected` | Plan (projected costs) |
+| `/goals` | Goals |
+| `/categories` | Categories |
+| `/analytics` | Analytics |
+| `/settings` | Settings |
+
+Public: `/login`, `/register`, `/auth/callback` (email confirmation).
+Anything else redirects to `/dashboard`.
+
+## Authentication
+
+Sign-in goes through the backend: `POST /api/v1/auth/login` authenticates
+against Supabase Auth and returns Supabase's own access and refresh tokens.
+The access token is kept in memory and sent as `Authorization: Bearer` on
+every request; the refresh token is kept in `localStorage` and used to
+restore the session on reload and to retry a request once after a 401.
+
+`ProtectedRoute` in `src/App.tsx` redirects to `/login` until a session is
+restored. The backend then runs every query with the user's own token, so
+Supabase's row level security applies to it.
+
+## Environment variables
+
+| Variable | Default | Notes |
+|---|---|---|
+| `VITE_API_BASE_URL` | `http://localhost:8000` | Set on the hosting platform for production |
+
+See `.env.example`. No secrets live in the frontend.
+
+## Out of scope: Sinking Funds
+
+The design approved at H2 has no sinking funds module, and the backend does
+not serve it on `main`. Here it is out of navigation and its query is off
+(`SINKING_FUNDS_ENABLED` in `src/hooks/useQueries.ts`), so Week View shows no
+funds section. The code is still in the tree, and the module as it was lives
+on the `feat/sinking-funds` branch in both repositories.
+
+## Project structure
+
+```
 src/
-├── api/                 # Axios API clients per module
-│   ├── client.ts        # Base Axios instance + JWT interceptor
-│   ├── auth.ts
-│   ├── expenses.ts
-│   ├── earnings.ts
-│   ├── categories.ts
-│   ├── currencies.ts
-│   ├── budgets.ts
-│   ├── recurring.ts
-│   ├── analytics.ts
-│   ├── goals.ts
-│   └── projected.ts
-│
+├── api/          Axios clients, one per backend module; client.ts holds the
+│                 instance, the JWT interceptor and the refresh logic
 ├── components/
-│   ├── charts/          # Recharts chart components
-│   │   ├── MonthlyChart.tsx      # 3-bar: income/expenses/projected
-│   │   ├── CategoryChart.tsx     # Pie chart
-│   │   ├── WeeklyChart.tsx       # Weekly cash flow bars
-│   │   ├── ProjectedChart.tsx    # Projected vs real line chart
-│   │   ├── BudgetActualChart.tsx # Budget vs actual bars
-│   │   └── NetWorthChart.tsx     # Cumulative net worth area chart
-│   │
-│   ├── layout/
-│   │   ├── AppLayout.tsx         # Sidebar + header wrapper
-│   │   ├── Sidebar.tsx           # Nav + dark mode + logout
-│   │   ├── Header.tsx            # Page title + notifications
-│   │   └── NotificationsPanel.tsx
-│   │
-│   └── ui/              # Reusable UI primitives
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       ├── Input.tsx
-│       ├── Modal.tsx
-│       ├── Badge.tsx
-│       ├── MonthPicker.tsx       # Pill-style month navigator
-│       ├── Skeleton.tsx          # Loading skeletons
-│       ├── FilterBar.tsx
-│       ├── DangerZone.tsx        # Destructive action with confirm
-│       ├── ImportModal.tsx       # CSV/JSON import with preview
-│       ├── RecurringToggle.tsx   # Toggle for recurring rules
-│       ├── EditExpenseModal.tsx
-│       └── EditEarningModal.tsx
-│
-├── hooks/
-│   └── useQueries.ts    # All TanStack Query hooks + QUERY_KEYS
-│
-├── pages/
-│   ├── auth/            # Login, Register, Callback (email confirm)
-│   ├── dashboard/       # Summary cards + charts + budget + goals
-│   ├── expenses/        # Month picker + transactions + rules tabs
-│   ├── earnings/        # Month picker + transactions + rules tabs
-│   ├── budgets/         # Budget CRUD + alerts
-│   ├── goals/           # Financial goals + progress bars
-│   ├── recurring/       # Recurring rules management
-│   ├── categories/      # Expense + income categories
-│   ├── analytics/       # Full analytics suite
-│   ├── weekview/        # Week navigation + move/split expenses
-│   └── projected/       # Projected cost forecasting
-│
-├── store/
-│   ├── authStore.ts     # Zustand: user + tokens
-│   └── themeStore.ts    # Zustand: dark mode
-│
-├── types/
-│   └── index.ts         # All TypeScript interfaces
-│
-└── utils/
-├── formatters.ts    # formatMXN, formatDate, formatPct, etc.
-└── pdfReport.ts     # Monthly PDF report generator
-
-## Environment Variables
-
-```env
-VITE_API_BASE_URL=https://exposbackend-production.up.railway.app
-VITE_APP_NAME=Budget Tracker
+│   ├── charts/   Recharts components
+│   ├── layout/   AppLayout, Sidebar, Header, NotificationsPanel
+│   └── ui/       Reusable primitives and modals
+├── config/       Add-menu definitions per screen
+├── hooks/        useAuth, and every TanStack Query hook in useQueries.ts
+├── pages/        One folder per screen, plus auth/
+├── store/        Zustand stores
+├── types/        Shared TypeScript interfaces
+└── utils/        Formatters, API error messages, PDF report, week boundaries
 ```
 
-## Local Development
+## Deployment
 
-```bash
-# Clone the repo
-git clone https://github.com/backendtrash/ExpOsFrontend.git
-cd ExpOsFrontend
-
-# Install dependencies
-pnpm install
-
-# Create .env.local with variables above
-# For local backend use:
-# VITE_API_BASE_URL=http://localhost:8000
-
-# Run dev server
-pnpm dev
-# Opens at http://localhost:5173
-```
-
-## Build
-
-```bash
-# Type check + build
-pnpm run build
-
-# Preview production build
-pnpm preview
-```
-
-## Key Features
-
-| Feature              | Description                                        |
-|----------------------|----------------------------------------------------|
-| Auth                 | Email/password + confirmation email + JWT refresh  |
-| Expenses/Earnings    | CRUD, month picker, import CSV/JSON, edit, search  |
-| Budgets              | Weekly/monthly limits + alerts + progress bars     |
-| Goals                | Fixed amount + monthly rate + auto savings category|
-| Recurring Rules      | Weekly/monthly rules + APScheduler auto-process    |
-| Week View            | Navigate by week, move + split expenses            |
-| Analytics            | 6 chart types + trends + YoY + net worth           |
-| Projections          | Forecast costs separate from recurring rules       |
-| PDF Report           | Full monthly report with charts + tables           |
-| Dark Mode            | System-aware + manual toggle                       |
-| Mobile Responsive    | Safari iOS safe area + touch-friendly layout       |
-
-## Architecture Notes
-
-- **Month picker default:** current month, navigates via arrows or dropdown
-- **staleTime:** 5 min default, 1hr currencies, 30min categories
-- **Prefetch on hover:** sidebar links prefetch data before click
-- **Goal contributions = expenses** — reduces balance + tracks progress
-- **Projected costs ≠ recurring rules** — projected is forecast-only
-
-## Deployment (Vercel)
-
-```bash
-# Push to GitHub → Vercel auto-deploys
-git push origin main
-
-# SPA routing handled by vercel.json rewrites
-# All paths redirect to index.html
-```
-
-## Live URLs
-
-- **Frontend:** https://exp-os-frontend.vercel.app
-- **Backend:**  https://exposbackend-production.up.railway.app
+`vercel.json` rewrites every non-API path to `index.html` for client-side
+routing. Set `VITE_API_BASE_URL` in the Vercel project's environment
+variables before the first build.

@@ -14,7 +14,6 @@ const PAGE_TITLES: Record<string, string> = {
   '/categories': 'Categories',
   '/analytics':  'Analytics',
   '/projected':  'Plan',
-  '/funds':      'Sinking Funds',
   '/settings':   'Settings',
 }
 
