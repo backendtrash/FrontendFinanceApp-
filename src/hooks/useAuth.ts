@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAuthStore } from '../store/authStore'
-import { getRefreshToken } from '../api/client'
+import apiClient, { getRefreshToken } from '../api/client'
 import axios from 'axios'
 import type { AuthResponse } from '../types/index'
 
@@ -27,9 +27,13 @@ export const useAuth = () => {
       }
 
       try {
-        // Exchange refresh token for new access token
+        // Exchange refresh token for new access token.
+        // Uses the API client's base URL, not VITE_API_BASE_URL directly:
+        // that variable is unset in development, which turned this into
+        // the literal "undefined/api/v1/auth/refresh" and logged the user
+        // out on every reload. client.ts fixed the same bug the same way.
         const response = await axios.post<AuthResponse>(
-          `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh`,
+          `${apiClient.defaults.baseURL}/api/v1/auth/refresh`,
           { refresh_token: refreshToken }
         )
 
