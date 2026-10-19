@@ -123,7 +123,7 @@ export default function SettingsPage() {
     const blob = await exportAllData()
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
-    a.href = url; a.download = `budgettrash-export-${new Date().toISOString().slice(0,10)}.json`
+    a.href = url; a.download = `backendfinance-export-${new Date().toISOString().slice(0,10)}.json`
     a.click(); URL.revokeObjectURL(url)
   }
 
@@ -330,7 +330,7 @@ export default function SettingsPage() {
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{username}</div>
             <div style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 2 }}>{user?.email}</div>
-            <span style={{ display: 'inline-block', marginTop: 6, fontSize: 9.5, padding: '2px 7px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent-ink)', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>BudgetTrash</span>
+            <span style={{ display: 'inline-block', marginTop: 6, fontSize: 9.5, padding: '2px 7px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent-ink)', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>BackendFinance</span>
           </div>
           <ChevronRight size={14} style={{ color: 'var(--text-mute)' }} />
         </div>
@@ -409,7 +409,7 @@ export default function SettingsPage() {
         </div>
 
         <div style={{ textAlign: 'center', fontSize: 10.5, color: 'var(--text-mute)', fontFamily: 'var(--font-mono)' }}>
-          BudgetTrash · made in MX
+          BackendFinance · made in MX
         </div>
       </div>
     </>

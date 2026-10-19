@@ -164,7 +164,7 @@ export default function RegisterPage() {
               <span style={{ color: '#fff', fontWeight: 700, fontSize: '14px', fontFamily: 'var(--font-display)' }}>S</span>
             </div>
             <span style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text)', fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}>
-              BudgetTrash
+              BackendFinance
             </span>
           </div>
 
