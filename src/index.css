@@ -1,0 +1,401 @@
+@import "tailwindcss";
+
+/* ── Design tokens — Style A: Refined Classic ───────────────────────────── */
+:root {
+  /* Accent */
+  --accent:         #702963;
+  --accent-ink:     #4d1c43;
+  --accent-soft:    #f7eef4;
+  --accent-hover:   #5a1f50;
+
+  /* Backgrounds */
+  --bg:             #fafaf7;
+  --surface:        #ffffff;
+  --surface-alt:    #f5f3ee;
+
+  /* Borders */
+  --border:         #e7e3da;
+  --border-strong:  #d8d3c7;
+
+  /* Text */
+  --text:           #1f1c18;
+  --text-dim:       #6b6557;
+  --text-mute:      #9b9586;
+
+  /* Semantic — positive (income / on-track) */
+  --positive:       #1f7a4d;
+  --positive-soft:  #e7f3ec;
+
+  /* Semantic — negative (expense / over-budget / destructive) */
+  --negative:       #a32d2d;
+  --negative-soft:  #fbeaea;
+
+  /* Semantic — warning */
+  --warning:        #a8651b;
+  --warning-soft:   #fbf0e0;
+
+  /* Semantic — info / net */
+  --info:           #2563a0;
+  --info-soft:      #e7eef7;
+
+  /* Card chrome */
+  --card-border:    1px solid #ece8df;
+  --shadow:         0 1px 2px rgba(31,28,24,0.04), 0 1px 3px rgba(31,28,24,0.06);
+  --shadow-lg:      0 8px 24px rgba(31,28,24,0.08), 0 2px 6px rgba(31,28,24,0.04);
+  --shadow-hover:   0 4px 14px rgba(31,28,24,0.08);
+
+  /* Radius */
+  --radius:         14px;
+  --radius-sm:      10px;
+  --radius-xs:      6px;
+
+  /* Typography */
+  --font-display:   'DM Sans', system-ui, sans-serif;
+  --font-body:      'DM Sans', system-ui, sans-serif;
+  --font-mono:      'JetBrains Mono', ui-monospace, monospace;
+
+  /* Legacy aliases kept for backward-compat during migration */
+  --brand:          #702963;
+  --brand-hover:    #5a1f50;
+  --brand-light:    rgba(112, 41, 99, 0.08);
+  --bg-primary:     #fafaf7;
+  --bg-card:        #ffffff;
+  --bg-sidebar:     #ffffff;
+  --text-primary:   #1f1c18;
+  --text-secondary: #6b6557;
+  --text-muted:     #9b9586;
+}
+
+/* ── Dark mode overrides — Refined Classic Dark (DARK_A) ─────────────────── */
+[data-theme="dark"] {
+  --bg:             #15120f;
+  --surface:        #1d1916;
+  --surface-alt:    #262019;
+  --border:         #332c25;
+  --border-strong:  #463d33;
+  --text:           #f1ece4;
+  --text-dim:       #a89f92;
+  --text-mute:      #736a5e;
+  --accent:         #c071ab;
+  --accent-soft:    rgba(192,113,171,0.16);
+  --accent-ink:     #edcde3;
+  --accent-hover:   #a85a94;
+  --positive:       #4cc488;
+  --positive-soft:  rgba(76,196,136,0.15);
+  --negative:       #e7706b;
+  --negative-soft:  rgba(231,112,107,0.15);
+  --warning:        #d99a4a;
+  --warning-soft:   rgba(217,154,74,0.15);
+  --info:           #5f9fd8;
+  --info-soft:      rgba(95,159,216,0.15);
+  --card-border:    1px solid #332c25;
+  --shadow:         0 1px 2px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.5);
+  --shadow-lg:      0 14px 40px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4);
+
+  /* Legacy aliases */
+  --bg-primary:     #15120f;
+  --bg-card:        #1d1916;
+  --bg-sidebar:     #1d1916;
+  --text-primary:   #f1ece4;
+  --text-secondary: #a89f92;
+  --text-muted:     #736a5e;
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color:            var(--text);
+  transition:       background-color 0.2s, color 0.2s;
+}
+
+/* Mono class — applied to all numeric figures */
+.font-mono { font-family: var(--font-mono) !important; }
+.font-display { font-family: var(--font-display) !important; }
+
+/* ── Semantic utility classes ─────────────────────────────────────────────── */
+.theme-card    { background-color: var(--surface); border-color: var(--border); }
+.theme-sidebar { background-color: var(--surface); border-color: var(--border); }
+.theme-text-primary   { color: var(--text);     }
+.theme-text-secondary { color: var(--text-dim); }
+.theme-text-muted     { color: var(--text-mute); }
+.theme-border         { border-color: var(--border); }
+.theme-bg             { background-color: var(--bg); }
+.theme-surface        { background-color: var(--surface); }
+.theme-surface-alt    { background-color: var(--surface-alt); }
+
+/* ── Card primitive ──────────────────────────────────────────────────────── */
+.s-card {
+  background:    var(--surface);
+  border:        var(--card-border);
+  border-radius: var(--radius);
+  box-shadow:    var(--shadow);
+}
+.s-card:hover { box-shadow: var(--shadow-hover); transition: box-shadow 150ms ease; }
+
+/* ── Segmented control ───────────────────────────────────────────────────── */
+.s-tabs {
+  display: inline-flex;
+  background: var(--surface-alt);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+.s-tab {
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 120ms ease;
+  border: none;
+  background: transparent;
+}
+.s-tab.active {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(31,28,24,0.08);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.s-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, opacity 120ms ease;
+  border: none;
+}
+.s-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(112,41,99,0.25);
+}
+.s-btn-primary:hover  { background: var(--accent-hover); }
+.s-btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.s-btn-secondary:hover { background: var(--surface-alt); }
+.s-btn-danger {
+  background: var(--negative-soft);
+  color: var(--negative);
+  border: 1px solid var(--negative-soft);
+}
+.s-btn-danger:hover { background: var(--negative); color: #fff; }
+
+/* ── Input focus ring per spec ───────────────────────────────────────────── */
+.s-input:focus {
+  outline: none;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ── Navigation active state ─────────────────────────────────────────────── */
+.nav-active {
+  background: var(--accent-soft) !important;
+  color: var(--accent-ink) !important;
+  font-weight: 600 !important;
+}
+.nav-active .nav-icon { color: var(--accent) !important; }
+
+/* ── Dark mode overrides for utility classes ─────────────────────────────── */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: #0f172a;
+  border-color:     #334155;
+  color:            #f1f5f9;
+}
+[data-theme="dark"] input::placeholder { color: #475569; }
+[data-theme="dark"] tr:hover td  { background-color: #1e293b !important; }
+[data-theme="dark"] table         { color: #f1f5f9; }
+[data-theme="dark"] thead tr      { background-color: #1e293b; border-color: #334155; }
+[data-theme="dark"] tbody tr      { border-color: #334155; }
+[data-theme="dark"] .bg-white     { background-color: #1e293b !important; }
+[data-theme="dark"] .bg-gray-50   { background-color: #0f172a !important; }
+[data-theme="dark"] .bg-gray-100  { background-color: #1e293b !important; }
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-gray-100 { border-color: #334155 !important; }
+[data-theme="dark"] .hover\:bg-gray-50:hover,
+[data-theme="dark"] .hover\:bg-gray-100:hover { background-color: #334155 !important; }
+[data-theme="dark"] .text-gray-900,
+[data-theme="dark"] .text-gray-800,
+[data-theme="dark"] .text-gray-700 { color: #f1f5f9 !important; }
+[data-theme="dark"] .text-gray-600,
+[data-theme="dark"] .text-gray-500 { color: #94a3b8 !important; }
+[data-theme="dark"] .text-gray-400,
+[data-theme="dark"] .text-gray-300 { color: #64748b !important; }
+
+/* ── Brand color overrides (Tailwind blue → brand purple) ────────────────── */
+.bg-blue-50    { background-color: var(--accent-soft) !important; }
+.text-blue-700 { color: var(--accent-ink) !important; }
+.text-blue-600 { color: var(--accent) !important; }
+.bg-blue-600   { background-color: var(--accent) !important; }
+.border-blue-200 { border-color: #e8c8e0 !important; }
+.bg-blue-100   { background-color: #f3e8f0 !important; }
+
+/* ── Safe area support (iOS Safari) ─────────────────────────────────────── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pt-safe { padding-top:    env(safe-area-inset-top,    0px); }
+
+/* ── Mobile / desktop visibility helpers ─────────────────────────────────── */
+.mobile-list   { display: none  !important; }
+.desktop-table { display: block !important; }
+@media (max-width: 640px) {
+  .mobile-list   { display: block !important; }
+  .desktop-table { display: none  !important; }
+  .hidden-mobile { display: none  !important; }
+}
+
+/* ── Login / auth ────────────────────────────────────────────────────────── */
+.login-outer {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  background: var(--accent);
+}
+
+.login-right-panel { background: var(--surface); }
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .login-right-panel {
+    padding-top:    max(48px, env(safe-area-inset-top));
+    padding-bottom: max(48px, env(safe-area-inset-bottom));
+  }
+}
+
+.login-form-card { width: 100%; max-width: 400px; }
+.form-title { color: var(--text) !important; }
+
+.mobile-logo { display: none; }
+
+@media (max-width: 640px) {
+  .mobile-logo { display: flex !important; }
+
+  .login-right-panel {
+    background: var(--accent) !important;
+    position: fixed !important;
+    inset: 0 !important;
+    overflow-y: auto !important;
+    align-items: flex-start !important;
+    padding-top:    max(60px, env(safe-area-inset-top))    !important;
+    padding-bottom: max(60px, env(safe-area-inset-bottom)) !important;
+    padding-left:   20px !important;
+    padding-right:  20px !important;
+    z-index: 0;
+  }
+  .login-right-panel::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .login-right-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .login-form-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 20px;
+    padding: 28px 22px;
+    position: relative;
+    z-index: 1;
+  }
+  .form-title { color: #1a1a2e !important; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Virtualized table ───────────────────────────────────────────────────── */
+.virtual-table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 580px;
+}
+@media (max-width: 640px) {
+  .virtual-table-container {
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+}
+
+/* ── Projected cost chips ────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cost-chips-container { flex-direction: column !important; }
+  .cost-chips-container > div { width: 100% !important; }
+}
+
+/* ── Bottom tab bar (mobile shell) ──────────────────────────────────────── */
+.mobile-tabbar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: var(--surface);
+  border-top: var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 50;
+}
+@media (min-width: 1024px) {
+  .mobile-tabbar { display: none !important; }
+}
+.mobile-tabbar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-mute);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+.mobile-tabbar-btn.active { color: var(--accent); }
+.mobile-tabbar-fab {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(112,41,99,0.4);
+  margin-bottom: 8px;
+  transition: background 120ms ease;
+}
+.mobile-tabbar-fab:hover { background: var(--accent-hover); }

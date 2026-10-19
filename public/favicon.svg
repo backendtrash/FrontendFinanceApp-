@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background with rounded corners -->
+  <rect width="32" height="32" rx="8" fill="#702963"/>
+  
+  <!-- Geometric accent — top right triangle -->
+  <polygon points="20,0 32,0 32,12" fill="#8B3A7A" opacity="0.6"/>
+  
+  <!-- Geometric accent — bottom left triangle -->
+  <polygon points="0,20 12,32 0,32" fill="#5A1F50" opacity="0.6"/>
+  
+  <!-- Letters BT -->
+  <text
+    x="16"
+    y="22"
+    font-family="helvetica, arial, sans-serif"
+    font-size="14"
+    font-weight="800"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="-0.5"
+  >BT</text>
+</svg>
