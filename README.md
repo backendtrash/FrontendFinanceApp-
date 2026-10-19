@@ -20,7 +20,7 @@ It talks to the API in
 You need Node 20 or newer, and the backend running locally.
 
 ```bash
-git clone https://github.com/backendtrash/FrontendFinanceApp.git
+git clone https://github.com/backendtrash/FrontendFinanceApp-.git
 cd FrontendFinanceApp
 
 # pnpm via corepack, which ships with Node — no global install needed
