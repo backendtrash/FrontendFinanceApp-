@@ -124,7 +124,7 @@ export default function LoginPage() {
               <span style={{ color: '#fff', fontWeight: 700, fontSize: '14px', fontFamily: 'var(--font-display)' }}>S</span>
             </div>
             <span style={{ fontSize: '17px', fontWeight: 700, color: 'var(--text)', fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}>
-              BudgetTrash
+              BackendFinance
             </span>
           </div>
 
@@ -133,7 +133,7 @@ export default function LoginPage() {
             Sign in
           </p>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '0 0 24px' }}>
-            Welcome back to BudgetTrash
+            Welcome back to BackendFinance
           </p>
 
           <form onSubmit={handleSubmit}>

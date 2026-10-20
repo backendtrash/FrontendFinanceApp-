@@ -20,7 +20,7 @@ const PAGE_TITLES: Record<string, string> = {
 export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const { pathname } = useLocation()
   const { user }     = useAuthStore()
-  const title        = PAGE_TITLES[pathname] || 'BudgetTrash'
+  const title        = PAGE_TITLES[pathname] || 'BackendFinance'
   const initials     = user?.email ? user.email.slice(0, 2).toUpperCase() : 'S'
 
   return (
