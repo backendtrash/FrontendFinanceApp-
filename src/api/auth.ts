@@ -2,13 +2,22 @@ import apiClient from './client'
 import type { AuthResponse, MeResponse } from '../types/index'
 
 // ── Register ──────────────────────────────────────────────────────────────
+// acceptedPrivacy must be true: the API refuses to create an account
+// without consent to the privacy notice (RF01).
 export const register = async (
   email: string,
-  password: string
+  password: string,
+  acceptedPrivacy: boolean,
+  acceptedOptionalPurposes = false,
 ): Promise<AuthResponse> => {
   const response = await apiClient.post<AuthResponse>(
     '/api/v1/auth/register',
-    { email, password }
+    {
+      email,
+      password,
+      accepted_privacy: acceptedPrivacy,
+      accepted_optional_purposes: acceptedOptionalPurposes,
+    }
   )
   return response.data
 }
