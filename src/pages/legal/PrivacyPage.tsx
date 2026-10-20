@@ -2,26 +2,14 @@ import { Link } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
 // Aviso de Privacidad Integral (RF01). Public: it has to be readable before
-// an account exists, and the registration form links here.
-//
-// Fields only the responsible party can supply are shown highlighted with
-// <Pending>, and the banner stays up while any remain. The technical facts
-// — hosting regions, this URL, the route to delete an account — are filled
-// in from how the application is actually deployed.
+// an account exists, and the registration form links here. The text is the
+// responsible party's; the technical facts in it — hosting regions, this
+// URL, where to delete an account — match how the application is deployed.
 
 const NOTICE_URL   = 'https://frontend-finance-app.vercel.app/privacidad'
 const LAST_UPDATED = '19 de octubre de 2026'
-const DRAFT        = true
 
 const BRAND = '#702963'
-
-function Pending({ children }: { children: ReactNode }) {
-  return (
-    <mark style={{ background: '#fdf0c8', color: '#7a5a00', padding: '0 3px', borderRadius: 3 }}>
-      [{children}]
-    </mark>
-  )
-}
 
 function H2({ children }: { children: ReactNode }) {
   return <h2 style={{ fontSize: 18, fontWeight: 600, margin: '32px 0 10px', color: 'var(--text-primary)' }}>{children}</h2>
@@ -64,18 +52,12 @@ function Ul({ items }: { items: ReactNode[] }) {
 }
 
 export default function PrivacyPage() {
-  const email = <Pending>CORREO DE PRIVACIDAD</Pending>
+  const email = <a href="mailto:studiojjpt@gmail.com" style={{ color: BRAND }}>studiojjpt@gmail.com</a>
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg, #faf9f7)', padding: '40px 20px' }}>
       <article style={{ maxWidth: 780, margin: '0 auto' }}>
         <Link to="/register" style={{ fontSize: 13, color: BRAND, textDecoration: 'none' }}>← Volver al registro</Link>
-
-        {DRAFT && (
-          <div role="note" style={{ margin: '16px 0', padding: '10px 14px', borderRadius: 8, background: '#fdf6e3', border: '1px solid #ecd9a0', fontSize: 13, color: '#6b5200' }}>
-            Faltan por completar los datos del responsable, marcados en amarillo.
-          </div>
-        )}
 
         <h1 style={{ fontSize: 26, fontWeight: 600, margin: '16px 0 6px', color: 'var(--text-primary)' }}>
           Aviso de Privacidad Integral — BackendFinance
@@ -95,13 +77,12 @@ export default function PrivacyPage() {
 
         <H2>1. Identidad y domicilio del responsable</H2>
         <P>
-          <Pending>NOMBRE COMPLETO O RAZÓN SOCIAL DEL RESPONSABLE</Pending> (“BackendFinance” o “el
-          Responsable”), con domicilio en <Pending>CALLE, NÚMERO, COLONIA, CÓDIGO POSTAL, MUNICIPIO, ESTADO</Pending>,
-          México, es responsable del tratamiento de tus datos personales.
+          Studio JJPT (“BackendFinance” o “el Responsable”), con domicilio en Calle Palacio de
+          Montealban 1865, Colonia Las Torres, C.P. 32556, Juárez, Chihuahua, México, es responsable
+          del tratamiento de tus datos personales.
         </P>
         <P>
-          Para cualquier asunto de privacidad puedes escribir a {email}, que atiende{' '}
-          <Pending>NOMBRE O ÁREA ENCARGADA DE DATOS PERSONALES</Pending>.
+          Para cualquier asunto de privacidad puedes escribir a {email}.
         </P>
 
         <H2>2. Datos personales que tratamos</H2>
@@ -195,7 +176,7 @@ export default function PrivacyPage() {
           <><strong>Aislamiento por usuario.</strong> Cada consulta a la base de datos se hace con tu propio token, y las políticas de seguridad por fila de PostgreSQL impiden que una cuenta lea o modifique datos de otra.</>,
           <><strong>Verificación continua.</strong> Una prueba automática con dos cuentas reales confirma ese aislamiento en cada cambio al código; si falla, el cambio no se integra.</>,
           <><strong>Cifrado en tránsito.</strong> Toda la comunicación entre tu navegador, la API y la base de datos viaja por HTTPS.</>,
-          <><strong>Acceso interno restringido.</strong> Solo <Pending>PERSONAS O ROLES AUTORIZADOS</Pending> pueden acceder a la infraestructura, y solo para mantenimiento o soporte.</>,
+          <><strong>Acceso restringido.</strong> En la operación normal, a tus datos solo accedes tú y la plataforma, de forma automatizada, para prestarte el servicio. Solo el titular de Studio JJPT puede acceder a la infraestructura, y únicamente para mantenimiento o soporte.</>,
         ]} />
         <P>
           Ninguna medida elimina todo riesgo. Si ocurre una vulneración que afecte de forma significativa
@@ -205,8 +186,8 @@ export default function PrivacyPage() {
         <H2>6. Conservación de los datos</H2>
         <P>
           Conservamos tus datos mientras tu cuenta esté activa. Si eliminas tu cuenta o solicitas la
-          cancelación, bloqueamos tus datos y los suprimimos de forma definitiva en un plazo máximo de{' '}
-          <Pending>NÚMERO</Pending> días, salvo lo que debamos conservar por obligación legal. Las copias
+          cancelación, bloqueamos tus datos y los suprimimos de forma definitiva en un plazo máximo de 7
+          días, salvo lo que debamos conservar por obligación legal. Las copias
           de respaldo de los proveedores se eliminan conforme a sus ciclos de rotación.
         </P>
         <P>Los reportes PDF y archivos que descargues quedan bajo tu control en tu dispositivo.</P>
