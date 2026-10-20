@@ -5,6 +5,7 @@ import { useAuthStore }      from '../../store/authStore'
 import { BarChart2, Target, CalendarDays, FileText } from 'lucide-react'
 import FloatingIconCanvas    from '../../components/ui/FloatingIconCanvas'
 import type { FormEvent }    from 'react'
+import { getApiErrorMessage } from '../../utils/apiError'
 
 const BRAND = '#702963'
 
@@ -25,19 +26,26 @@ export default function RegisterPage() {
   const [error,     setError]     = useState('')
   const [loading,   setLoading]   = useState(false)
   const [confirmed, setConfirmed] = useState(false)
+  // RF01. acceptedPrivacy is required to submit; optional purposes are
+  // opt-in and never pre-ticked.
+  const [acceptedPrivacy,  setAcceptedPrivacy]  = useState(false)
+  const [acceptedOptional, setAcceptedOptional] = useState(false)
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
     if (password !== password2) { setError('Passwords do not match'); return }
+    if (!acceptedPrivacy) { setError('Debes aceptar el Aviso de Privacidad para crear tu cuenta'); return }
     setLoading(true)
     try {
-      const data = await register(email, password)
+      const data = await register(email, password, acceptedPrivacy, acceptedOptional)
       if ((data as any).requires_confirmation) { setConfirmed(true); return }
       setAuth(data.user, data.access_token, data.refresh_token)
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Registration failed')
+      // Not err.response.data.detail directly: a 422 carries an array there,
+      // and rendering it would crash the page instead of showing the error.
+      setError(getApiErrorMessage(err, 'Registration failed'))
     } finally {
       setLoading(false)
     }
@@ -183,15 +191,45 @@ export default function RegisterPage() {
             <input type="password" value={password} required onChange={e => setPassword(e.target.value)} placeholder="Min. 8 characters" style={inputStyle} />
 
             <label style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' }}>Confirm password</label>
-            <input type="password" value={password2} required onChange={e => setPassword2(e.target.value)} placeholder="Repeat password" style={{ ...inputStyle, marginBottom: '20px' }} />
+            <input type="password" value={password2} required onChange={e => setPassword2(e.target.value)} placeholder="Repeat password" style={{ ...inputStyle, marginBottom: '16px' }} />
+
+            {/* Aviso de privacidad simplificado (RF01) */}
+            <div style={{ fontSize: '12px', lineHeight: 1.55, color: 'var(--text-secondary)', background: 'var(--accent-soft, #f6eef4)', borderRadius: '8px', padding: '10px 12px', marginBottom: '12px' }}>
+              BackendFinance trata tus datos personales y financieros solo para operar tu cuenta de
+              finanzas personales: registrar, planear y analizar tus movimientos. No los vende ni los
+              comparte con fines publicitarios. Consulta el{' '}
+              <Link to="/privacidad" target="_blank" rel="noopener" style={{ color: BRAND, fontWeight: 600 }}>
+                Aviso de Privacidad Integral
+              </Link>.
+            </div>
+
+            <label style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', fontSize: '13px', color: 'var(--text-primary)', marginBottom: '8px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={acceptedPrivacy} required
+                     onChange={e => setAcceptedPrivacy(e.target.checked)} style={{ marginTop: '2px' }} />
+              <span>
+                He leído y acepto el{' '}
+                <Link to="/privacidad" target="_blank" rel="noopener" style={{ color: BRAND, fontWeight: 600 }}>
+                  Aviso de Privacidad
+                </Link>
+              </span>
+            </label>
+
+            <label style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '20px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={acceptedOptional}
+                     onChange={e => setAcceptedOptional(e.target.checked)} style={{ marginTop: '2px' }} />
+              <span>
+                (Opcional) Acepto recibir avisos sobre nuevas funciones y que mis datos se usen en
+                estadísticas de uso anónimas.
+              </span>
+            </label>
 
             {error && <p style={{ fontSize: '13px', color: '#e53e3e', marginBottom: '14px', textAlign: 'center' }}>{error}</p>}
 
-            <button type="submit" disabled={loading} style={{
+            <button type="submit" disabled={loading || !acceptedPrivacy} style={{
               width: '100%', padding: '12px', borderRadius: '10px', border: 'none',
               fontSize: '14px', fontWeight: 600, color: '#fff',
-              background: loading ? '#9a5a8a' : BRAND,
-              cursor: loading ? 'not-allowed' : 'pointer',
+              background: (loading || !acceptedPrivacy) ? '#9a5a8a' : BRAND,
+              cursor: (loading || !acceptedPrivacy) ? 'not-allowed' : 'pointer',
             }}>
               {loading ? 'Creating account...' : 'Create account'}
             </button>

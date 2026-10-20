@@ -19,6 +19,7 @@ import WeekViewPage      from './pages/weekview/WeekViewPage'
 import LoadingSpinner    from './components/ui/LoadingSpinner'
 import ProjectedPage from './pages/projected/ProjectedPage'
 import SettingsPage from './pages/settings/SettingsPage'
+import PrivacyPage  from './pages/legal/PrivacyPage'
 
 
 // ── Protected Route ────────────────────────────────────────────────────────
@@ -57,6 +58,8 @@ export default function App() {
       <Route path="/login"         element={<LoginPage />} />
       <Route path="/register"      element={<RegisterPage />} />
       <Route path="/auth/callback" element={<CallbackPage />} />
+      {/* Public: the notice must be readable before an account exists */}
+      <Route path="/privacidad"    element={<PrivacyPage />} />
 
       {/* Protected routes — all wrapped in AppLayout */}
       <Route
