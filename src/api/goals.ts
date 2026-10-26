@@ -51,11 +51,6 @@ export const splitExpense = async (
 }
 
 // ── Workspace / account-level operations ─────────────────────────────────
-export const resetWorkspace = async (): Promise<{ deleted_transactions: number }> => {
-  const response = await apiClient.delete('/api/v1/workspace/reset')
-  return response.data
-}
-
 export const exportAllData = async (): Promise<Blob> => {
   const response = await apiClient.get('/api/v1/export', { responseType: 'blob' })
   return response.data
