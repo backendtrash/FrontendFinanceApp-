@@ -118,13 +118,23 @@ export default function SettingsPage() {
     catch { setWeekStartDay(prefs?.week_start_day ?? 1) }
   }
 
+  const [exporting,   setExporting]   = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
+
   const handleExport = async () => {
-    const { exportAllData } = await import('../../api/goals')
-    const blob = await exportAllData()
-    const url  = URL.createObjectURL(blob)
-    const a    = document.createElement('a')
-    a.href = url; a.download = `backendfinance-export-${new Date().toISOString().slice(0,10)}.json`
-    a.click(); URL.revokeObjectURL(url)
+    setExporting(true); setExportError(null)
+    try {
+      const { exportAllData } = await import('../../api/goals')
+      const blob = await exportAllData()
+      const url  = URL.createObjectURL(blob)
+      const a    = document.createElement('a')
+      a.href = url; a.download = `backendfinance-export-${new Date().toISOString().slice(0,10)}.json`
+      a.click(); URL.revokeObjectURL(url)
+    } catch {
+      setExportError('Could not export your data. Try again in a moment.')
+    } finally {
+      setExporting(false)
+    }
   }
 
   const initials   = user?.email ? user.email.slice(0, 2).toUpperCase() : 'BT'
@@ -271,13 +281,14 @@ export default function SettingsPage() {
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>Export all data</div>
             <div style={{ fontSize: 11.5, color: 'var(--text-dim)', marginTop: 2 }}>Download every record as a JSON archive</div>
+            {exportError && (
+              <p role="alert" style={{ fontSize: 11.5, color: 'var(--negative)', marginTop: 6, fontWeight: 600 }}>{exportError}</p>
+            )}
           </div>
-          <button onClick={handleExport} style={{ padding: '7px 14px', flexShrink: 0, border: 'var(--card-border)', background: 'transparent', color: 'var(--text)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Download size={13} /> Export
+          <button onClick={handleExport} disabled={exporting} style={{ padding: '7px 14px', flexShrink: 0, border: 'var(--card-border)', background: 'transparent', color: 'var(--text)', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: exporting ? 'not-allowed' : 'pointer', opacity: exporting ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Download size={13} /> {exporting ? 'Exporting…' : 'Export'}
           </button>
         </div>
-        <DangerRow label="Reset workspace" description="Delete all transactions but keep your account and categories" btnLabel="Reset"
-          onConfirm={async () => { const { resetWorkspace } = await import('../../api/goals'); await resetWorkspace() }} />
         <DangerRow label="Delete account" description="Permanently delete your account and all associated data" btnLabel="Delete account"
           onConfirm={async () => { const { deleteAccount } = await import('../../api/auth'); await deleteAccount(); clearAuth(); window.location.href = '/login' }} />
       </div>
