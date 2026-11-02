@@ -278,7 +278,7 @@ export default function AnalyticsPage() {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>
               <h3 style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em' }}>Projected vs Real Spending</h3>
-              <p style={{ fontSize: 11.5, color: 'var(--text-dim)', marginTop: 2 }}>Dashed = projection from recurring rules · Solid = actual</p>
+              <p style={{ fontSize: 11.5, color: 'var(--text-dim)', marginTop: 2 }}>Dashed = projection from planned costs · Solid = actual, up to today</p>
             </div>
             {projected && (
               <div style={{ textAlign: 'right' }}>
@@ -291,11 +291,14 @@ export default function AnalyticsPage() {
             <>
               <ProjectedChart data={projected?.months ?? []} />
               {projected && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginTop: 16, paddingTop: 16, borderTop: 'var(--card-border)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 16, marginTop: 16, paddingTop: 16, borderTop: 'var(--card-border)' }}>
+                  {/* Projected and real cover the same days, up to today; what is
+                      still to come is shown apart, not netted into the variance. */}
                   {[
-                    { k: 'Avg monthly projected', v: formatMXN(Number(projected.avg_monthly_projected)),  c: 'var(--info)'     },
-                    { k: 'Total real (past)',      v: formatMXN(Number(projected.total_real)),            c: 'var(--negative)' },
-                    { k: 'Variance',               v: formatMXN(Number(projected.total_variance)),        c: Number(projected.total_variance)<=0?'var(--positive)':'var(--negative)' },
+                    { k: 'Projected to date',     v: formatMXN(Number(projected.total_projected)),       c: 'var(--info)'     },
+                    { k: 'Real to date',          v: formatMXN(Number(projected.total_real)),            c: 'var(--negative)' },
+                    { k: 'Variance',              v: formatMXN(Number(projected.total_variance)),        c: Number(projected.total_variance)<=0?'var(--positive)':'var(--negative)' },
+                    { k: 'Projected ahead',       v: formatMXN(Number(projected.projected_future)),      c: 'var(--text-dim)' },
                   ].map(s => (
                     <div key={s.k} style={{ textAlign: 'center' }}>
                       <p style={{ fontSize: 11, color: 'var(--text-dim)', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{s.k}</p>

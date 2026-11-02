@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import {
   useProjectedCosts, useDeleteProjectedCost,
   useCategories, useRecurringRules,
-  useCarryForwardStatus,
+  useCarryForwardStatus, useMonthlyProjection, useProjectedAnalytics,
 } from '../../hooks/useQueries'
 import EditProjectedModal  from '../../components/ui/EditProjectedModal'
 import { useAddSheetStore } from '../../store/addSheetStore'
@@ -97,10 +97,15 @@ export default function ProjectedPage() {
     return true
   })
 
-  const toMonthly = (c: ProjectedCost) =>
-    Number(c.amount_mxn) * (c.frequency === 'weekly' ? 4.333 : 1)
+  // Each cost's share of this month comes from the API, by the same rule as
+  // the dashboard (a weekly cost by the days the month has), so the plan and
+  // the dashboard show the same figures (defect 29).
+  const { data: projection } = useMonthlyProjection(year, month)
+  const toMonthly = (c: ProjectedCost) => Number(projection?.cost_breakdown?.[c.id] ?? 0)
 
-  const totalPlanned  = activeCosts.reduce((s, c) => s + toMonthly(c), 0)
+  const totalPlanned  = Number(projection?.total_projected_mxn ?? 0)
+  const { data: projectedAnalytics } = useProjectedAnalytics(3, 1)
+  const projectedAhead = Number(projectedAnalytics?.projected_future ?? 0)
   const recurringIncome = rules
     .filter(r => r.type === 'income' && r.is_active)
     .reduce((s, r) => s + Number(r.amount) * (r.frequency === 'weekly' ? 4.333 : 1), 0)
@@ -157,6 +162,7 @@ export default function ProjectedPage() {
     },
     { k: 'Total planned',    v: totalPlanned, color: 'var(--text)',     sub: `${activeCosts.length} planned costs · ${allocatedPct.toFixed(0)}% of income` },
     { k: 'Left to save',     v: leftToSave,   color: leftToSave >= 0 ? 'var(--positive)' : 'var(--negative)', sub: leftToSave >= 0 ? 'Headroom after the plan' : 'Plan exceeds income' },
+    { k: 'Still ahead',      v: projectedAhead, color: 'var(--text-dim)', sub: 'Rest of this month and the next 3' },
   ]
 
   // ── Shared: allocation bar ────────────────────────────────────────────
@@ -299,7 +305,7 @@ export default function ProjectedPage() {
         </div>
 
         {/* ── Hero stat row (desktop) ───────────────────────────────── */}
-        <div className="hidden sm:grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+        <div className="hidden sm:grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
           {heroCards.map(s => (
             <div key={s.k} style={{ padding: '18px 20px', background: 'var(--surface)', border: 'var(--card-border)', borderRadius: 14, boxShadow: 'var(--shadow)' }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-dim)', letterSpacing: '0.04em', textTransform: 'uppercase', marginBottom: 10 }}>{s.k}</div>
