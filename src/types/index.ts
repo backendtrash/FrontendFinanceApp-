@@ -295,11 +295,25 @@ export interface ProjectedDataPoint {
   is_future:        boolean
 }
 
+export interface ProjectedDataPoint {
+  month_label:       string
+  year:              number
+  month:             number
+  projected_amount:  number   // the month's full projection
+  projected_to_date: number   // the part that has elapsed (all, up to today, or none)
+  real_amount:       number
+  variance:          number   // real_amount - projected_to_date
+  is_future:         boolean
+}
+
+// total_projected and total_real cover the same elapsed span, up to today;
+// projected_future is what is still to come (defect 9).
 export interface ProjectedAnalytics {
-  months:                MonthlyDataPoint[]
+  months:                ProjectedDataPoint[]
   total_projected:       number
   total_real:            number
   total_variance:        number
+  projected_future:      number
   avg_monthly_projected: number
 }
 
@@ -410,6 +424,7 @@ export interface ProjectedCostCreate {
 export interface MonthlyProjection {
   total_projected_mxn: string
   category_breakdown:  Record<string, string>
+  cost_breakdown:      Record<string, string>   // cost id -> its share of this month
   year:                number
   month:               number
 }
