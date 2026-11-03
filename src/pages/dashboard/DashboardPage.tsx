@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   TrendingUp, TrendingDown, Wallet,
@@ -9,7 +9,7 @@ import {
   useDashboard, useMonthlyAnalytics, useCategoryAnalytics,
   useBudgetProgress, useGoals, useExpenses, useEarnings,
   useCurrencies, useDashboardWeekly, useMonthlyProjection,
-  useCarryForwardStatus, useApplyCarryForward,
+  useCarryForwardStatus,
 } from '../../hooks/useQueries'
 import DashboardWeeklyChart from '../../components/charts/DashboardWeeklyChart'
 import { generateMonthlyReport } from '../../utils/pdfReport'
@@ -207,23 +207,10 @@ export default function DashboardPage() {
 
   const isCurrentMonth = month === today.getMonth() + 1 && year === today.getFullYear()
 
+  // The balance the month starts with, carried over from the month before.
+  // Read only: it used to be written as a real expense or earning, which
+  // every total then counted again (defect 31).
   const { data: cfStatus }  = useCarryForwardStatus(year, month)
-  const applyCarryForward   = useApplyCarryForward()
-  const cfAppliedRef        = useRef(false)
-
-  useEffect(() => {
-    if (
-      isCurrentMonth &&
-      cfStatus &&
-      !cfStatus.applied &&
-      Number(cfStatus.balance) !== 0 &&
-      !cfAppliedRef.current &&
-      !applyCarryForward.isPending
-    ) {
-      cfAppliedRef.current = true
-      applyCarryForward.mutate({ year, month })
-    }
-  }, [cfStatus, isCurrentMonth])
 
   const [showExpense, setShowExpense] = useState(false)
   const [showIncome,  setShowIncome]  = useState(false)
@@ -463,7 +450,7 @@ export default function DashboardPage() {
             value={(Number(cfStatus.balance) >= 0 ? '+' : '') + formatMXN(Number(cfStatus.balance))}
             icon={<ArrowRight size={14} style={{ color: Number(cfStatus.balance) >= 0 ? 'var(--positive)' : 'var(--negative)' }} />}
             valueColor={Number(cfStatus.balance) >= 0 ? 'var(--positive)' : 'var(--negative)'}
-            sub={`from ${cfStatus.source_period}`}
+            sub={`Balance at the end of ${cfStatus.source_period}`}
           />
         )}
       </div>
