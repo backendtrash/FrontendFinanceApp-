@@ -118,13 +118,3 @@ export const getCarryForwardStatus = async (
   return r.data
 }
 
-export const applyCarryForward = async (
-  year: number,
-  month: number,
-): Promise<CarryForwardStatus> => {
-  const r = await apiClient.post<CarryForwardStatus>(
-    '/api/v1/analytics/carry-forward',
-    { year, month },
-  )
-  return r.data
-}

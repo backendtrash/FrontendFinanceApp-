@@ -539,19 +539,6 @@ export const useCarryForwardStatus = (year: number, month: number) =>
     staleTime: 1000 * 60 * 5,
   })
 
-export const useApplyCarryForward = () => {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ year, month }: { year: number; month: number }) =>
-      analyticsApi.applyCarryForward(year, month),
-    onSuccess: (_, { year, month }) => {
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.dashboard })
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.earnings })
-      qc.invalidateQueries({ queryKey: QUERY_KEYS.expenses })
-      qc.invalidateQueries({ queryKey: [...QUERY_KEYS.carryForward, year, month] })
-    },
-  })
-}
 
 export const useUpdateProjectedCost = () => {
   const qc = useQueryClient()
