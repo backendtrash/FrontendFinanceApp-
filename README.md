@@ -33,8 +33,14 @@ corepack pnpm dev
 # http://localhost:5173
 ```
 
-Start the API first (see the backend README): `uvicorn app.main:app --port 8000`.
+Start the API first (see the backend README, "The whole system on one
+machine"): `uvicorn app.main:app --port 8000`, with **`SCHEDULER_ENABLED=false`**
+in its `.env`. The project has one Supabase database, production; a local API
+with the scheduler on would run the nightly jobs against real data.
 Without `VITE_API_BASE_URL`, the app sends requests to `http://localhost:8000`.
+
+Sign in with a test account (`prueba-a` or `prueba-b`): a local session
+writes to the production database.
 
 ```bash
 corepack pnpm build     # type check (tsc -b) + production build
