@@ -1,0 +1,66 @@
+name: build
+
+# On every pull request and push to main:
+#   build   pnpm build, which type-checks (tsc -b) before bundling.
+#   routes  every API call in src/ must have a route in the backend's main
+#           branch (defect 28 in the backend repository). The backend runs
+#           the same test against this repository's main on its own pull
+#           requests, so a call and its route can be merged in either
+#           repository without one breaking the other unseen.
+# Lint does not gate yet: 166 problems predate this workflow.
+# Require "build" and "routes" under Settings -> Branches -> main.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@9.15.9 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+  routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: frontend
+
+      - uses: actions/checkout@v4
+        with:
+          repository: backendtrash/BackendFinanceApp
+          ref: main
+          path: backend
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the backend's dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Check this frontend's calls against the backend's routes
+        working-directory: backend
+        env:
+          FRONTEND_DIR: ../frontend
+          EXPOS_REQUIRE_FRONTEND: "1"
+        run: pytest -o addopts="" -rxs tests/test_frontend_routes.py
