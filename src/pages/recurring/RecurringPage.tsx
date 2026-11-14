@@ -3,7 +3,7 @@ import { useVirtualizer }              from '@tanstack/react-virtual'
 import { RefreshCw, TrendingDown, TrendingUp, CheckCircle, X } from 'lucide-react'
 import {
   useRecurringRules, useDeleteRecurringRule,
-  useCategories, useCurrencies, useMonthlyProjection,
+  useCategories, useCurrencies, useMonthlyProjection, useMonthlyRecurring,
 } from '../../hooks/useQueries'
 import Card               from '../../components/ui/Card'
 import Modal              from '../../components/ui/Modal'
@@ -52,6 +52,7 @@ export default function RecurringPage() {
   const { data: categories = [] }             = useCategories()
   const { data: currencies = [] }             = useCurrencies()
   const { data: projection }                  = useMonthlyProjection(year, month)
+  const { data: recurringMonth }              = useMonthlyRecurring(year, month)
   const deleteRule                             = useDeleteRecurringRule()
 
   const catMap = Object.fromEntries(categories.map(c => [c.id, c]))
@@ -75,9 +76,10 @@ export default function RecurringPage() {
   // ── Stat computations ────────────────────────────────────────────────────
   const expRules = rules.filter(r => r.type === 'expense' && r.is_active)
   const incRules = rules.filter(r => r.type === 'income'  && r.is_active)
-  const toMonthly = (r: any) => Number(r.amount) * (r.frequency === 'weekly' ? 4.33 : 1)
-  const monthlyExp    = expRules.reduce((s, r) => s + toMonthly(r), 0)
-  const monthlyInc    = incRules.reduce((s, r) => s + toMonthly(r), 0)
+  // Counted by the API from each rule's real charge dates, in MXN: a weekly
+  // rule is four or five charges depending on the month (defect 30).
+  const monthlyExp    = Number(recurringMonth?.expense_total ?? 0)
+  const monthlyInc    = Number(recurringMonth?.income_total ?? 0)
   const projectedTotal = Number(projection?.total_projected_mxn ?? 0)
   const netRecurring  = monthlyInc - monthlyExp
   const projectedNet  = monthlyInc - projectedTotal

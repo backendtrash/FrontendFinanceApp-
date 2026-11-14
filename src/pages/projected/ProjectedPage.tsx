@@ -3,8 +3,8 @@ import { ChevronLeft, ChevronRight, Plus, Pencil } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import {
   useProjectedCosts, useDeleteProjectedCost,
-  useCategories, useRecurringRules,
-  useCarryForwardStatus, useMonthlyProjection, useProjectedAnalytics,
+  useCategories,
+  useCarryForwardStatus, useMonthlyProjection, useProjectedAnalytics, useMonthlyRecurring,
 } from '../../hooks/useQueries'
 import EditProjectedModal  from '../../components/ui/EditProjectedModal'
 import { useAddSheetStore } from '../../store/addSheetStore'
@@ -80,7 +80,6 @@ export default function ProjectedPage() {
   const [showEditModal, setShowEditModal] = useState(false)
 
   const { data: costs = [], isLoading } = useProjectedCosts()
-  const { data: rules = [] }            = useRecurringRules()
   const { data: expCats = [] }          = useCategories('expense')
   const deleteCost                      = useDeleteProjectedCost()
   const { data: cfStatus }              = useCarryForwardStatus(year, month)
@@ -106,9 +105,9 @@ export default function ProjectedPage() {
   const totalPlanned  = Number(projection?.total_projected_mxn ?? 0)
   const { data: projectedAnalytics } = useProjectedAnalytics(3, 1)
   const projectedAhead = Number(projectedAnalytics?.projected_future ?? 0)
-  const recurringIncome = rules
-    .filter(r => r.type === 'income' && r.is_active)
-    .reduce((s, r) => s + Number(r.amount) * (r.frequency === 'weekly' ? 4.333 : 1), 0)
+  // What the income rules really pay this month, from the API (defect 30).
+  const { data: recurringMonth } = useMonthlyRecurring(year, month)
+  const recurringIncome = Number(recurringMonth?.income_total ?? 0)
   const cfBalance     = Number(cfStatus?.balance ?? 0)
   const income        = recurringIncome + cfBalance
   const leftToSave    = income - totalPlanned
