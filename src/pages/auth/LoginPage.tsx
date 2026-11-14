@@ -192,22 +192,6 @@ export default function LoginPage() {
             <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
           </div>
 
-          {/* Testimonial */}
-          <div style={{
-            background: 'rgba(112,41,99,0.05)',
-            borderLeft: `2px solid ${BRAND}`,
-            borderRadius: '0 8px 8px 0',
-            padding: '12px 14px',
-            marginBottom: '16px',
-          }}>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '0 0 6px', lineHeight: 1.6 }}>
-              " My money vanished into a black hole—aka my daily iced latte. Now I track every sip, and my wallet stopped crying."
-            </p>
-            <p style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
-              — Cashidy Bin, Proud User
-            </p>
-          </div>
-
           <p style={{ textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
             No account?{' '}
             <Link to="/register" style={{ color: BRAND, textDecoration: 'none', fontWeight: 600 }}>

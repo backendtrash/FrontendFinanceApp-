@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 // URL, where to delete an account — match how the application is deployed.
 
 const NOTICE_URL   = 'https://frontend-finance-app.vercel.app/privacidad'
-const LAST_UPDATED = '19 de octubre de 2026'
+const LAST_UPDATED = '13 de noviembre de 2026'
 
 const BRAND = '#702963'
 
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
         <Table
           head={['Categoría', 'Datos', 'Para qué se usan']}
           rows={[
-            ['Identificación y contacto', 'Nombre, correo electrónico', 'Crear y administrar tu cuenta'],
+            ['Identificación y contacto', 'Correo electrónico', 'Crear y administrar tu cuenta'],
             ['Autenticación', 'Contraseña (almacenada cifrada por Supabase Auth; no la conocemos), identificador de usuario, tokens de sesión', 'Iniciar sesión y proteger tu cuenta'],
             ['Patrimoniales y financieros', 'Gastos e ingresos (monto, moneda, fecha, descripción, categoría), monto convertido a MXN y tipo de cambio aplicado, categorías propias, presupuestos, movimientos recurrentes, metas de ahorro, costos proyectados, archivos de importación en lote, patrimonio acumulado', 'Prestar las funciones de registro, planeación y analítica'],
             ['Técnicos', 'Dirección IP, tipo de navegador y dispositivo, fecha y hora de acceso, registros de errores', 'Seguridad, diagnóstico y continuidad del servicio'],
