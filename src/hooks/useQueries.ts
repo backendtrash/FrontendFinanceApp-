@@ -256,6 +256,13 @@ export const useRecurringRules = (activeOnly = false) =>
     queryFn:  () => recurringApi.getRecurringRules(activeOnly),
   })
 
+// Under QUERY_KEYS.recurring, so creating or deleting a rule refreshes it.
+export const useMonthlyRecurring = (year: number, month: number) =>
+  useQuery({
+    queryKey: [...QUERY_KEYS.recurring, 'monthly', year, month],
+    queryFn:  () => recurringApi.getMonthlyRecurring(year, month),
+  })
+
 export const useCreateRecurringRule = () => {
   const qc = useQueryClient()
   return useMutation({

@@ -421,6 +421,15 @@ export interface ProjectedCostCreate {
   day_of_month?: number
 }
 
+export interface MonthlyRecurring {
+  year:          number
+  month:         number
+  expense_total: string
+  income_total:  string
+  net:           string
+  rules:         Record<string, { charges: number; amount_mxn: string }>
+}
+
 export interface MonthlyProjection {
   total_projected_mxn: string
   category_breakdown:  Record<string, string>

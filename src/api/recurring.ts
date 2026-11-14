@@ -1,5 +1,5 @@
 import apiClient from './client'
-import type { RecurringRule, RecurringRuleCreate } from '../types/index'
+import type { RecurringRule, RecurringRuleCreate, MonthlyRecurring } from '../types/index'
 
 export const getRecurringRules = async (
   activeOnly: boolean = false
@@ -7,6 +7,19 @@ export const getRecurringRules = async (
   const response = await apiClient.get<RecurringRule[]>(
     '/api/v1/recurring/',
     { params: { active_only: activeOnly } }
+  )
+  return response.data
+}
+
+// What the active rules charge in a month, counted by the API from each
+// rule's real charge dates (defect 30).
+export const getMonthlyRecurring = async (
+  year: number,
+  month: number,
+): Promise<MonthlyRecurring> => {
+  const response = await apiClient.get<MonthlyRecurring>(
+    '/api/v1/recurring/monthly',
+    { params: { year, month } }
   )
   return response.data
 }
