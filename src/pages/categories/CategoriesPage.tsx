@@ -13,6 +13,7 @@ import Badge               from '../../components/ui/Badge'
 import LoadingSpinner      from '../../components/ui/LoadingSpinner'
 import type { CategoryCreate, TransactionType } from '../../types/index'
 import { useAddSheetStore }                        from '../../store/addSheetStore'
+import { getApiErrorMessage }                      from '../../utils/apiError'
 
 // ── Color Picker ──────────────────────────────────────────────────────────
 // Style A canonical palette — earthy jewel tones matching design tokens
@@ -169,6 +170,15 @@ export default function CategoriesPage() {
 
   const { data: categories = [], isLoading } = useCategories()
   const deleteCategory                        = useDeleteCategory()
+  // A category still in use answers 409 with the reason (defect 38): show it
+  // instead of letting the rejection go unhandled and the click do nothing.
+  const [deleteError, setDeleteError]         = useState('')
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Delete "${name}"?`)) return
+    setDeleteError('')
+    try { await deleteCategory.mutateAsync(id) }
+    catch (e) { setDeleteError(getApiErrorMessage(e, `Could not delete "${name}"`)) }
+  }
 
   const expenseCategories = categories.filter(c => c.type === 'expense')
   const incomeCategories  = categories.filter(c => c.type === 'income')
@@ -180,6 +190,11 @@ export default function CategoriesPage() {
 
   const categoryList = (
     <Card padding={false}>
+      {deleteError && (
+        <p role="alert" style={{ margin: 0, padding: '12px 20px', fontSize: 12.5, fontWeight: 600, color: 'var(--negative)', borderBottom: 'var(--card-border)' }}>
+          {deleteError}
+        </p>
+      )}
       {isLoading ? (
         <div className="py-12 flex justify-center"><LoadingSpinner text="Loading categories..." /></div>
       ) : displayed.length === 0 ? (
@@ -201,7 +216,7 @@ export default function CategoriesPage() {
                     </span>
                     <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{c.name}</p>
                   </div>
-                  <button onClick={async () => { if (!confirm(`Delete "${c.name}"?`)) return; await deleteCategory.mutateAsync(c.id) }}
+                  <button onClick={() => handleDelete(c.id, c.name)}
                     style={{ color: 'var(--text-mute)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 14 }}
                     onMouseEnter={e => (e.currentTarget.style.color = 'var(--negative)')}
                     onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-mute)')}>✕</button>
