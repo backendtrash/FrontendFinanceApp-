@@ -3,7 +3,7 @@ import {
   LayoutDashboard, TrendingDown, TrendingUp,
   Target, Trophy, CalendarDays, RefreshCw,
   Tag, BarChart2, LineChart, Settings,
-  Moon, Sun, LogOut, ChevronDown,
+  Moon, Sun, LogOut, ChevronDown, HelpCircle,
 } from 'lucide-react'
 import { useAuthStore }    from '../../store/authStore'
 import { useThemeStore }   from '../../store/themeStore'
@@ -12,6 +12,12 @@ import { useQueryClient }  from '@tanstack/react-query'
 import { QUERY_KEYS }      from '../../hooks/useQueries'
 import * as analyticsApi   from '../../api/analytics'
 import * as budgetsApi     from '../../api/budgets'
+
+// The user manual, one section per screen (defect 40: an acceptance tester
+// missed a usage guide). It lives with the backend's documentation so there
+// is a single copy to keep up to date.
+const MANUAL_URL =
+  'https://github.com/backendtrash/BackendFinanceApp/blob/main/docs/manual-usuario.md'
 
 const NAV_GROUPS = [
   {
@@ -192,6 +198,26 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
             {user?.email}
           </p>
         </div>
+
+        {/* User manual */}
+        <a
+          href={MANUAL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 9,
+            width: '100%', padding: '7px 10px',
+            borderRadius: 8, textDecoration: 'none',
+            fontSize: 12.5, fontWeight: 500, color: 'var(--text-dim)',
+            transition: 'background 120ms ease',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface-alt)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+        >
+          <HelpCircle size={15} />
+          Help · user guide
+        </a>
 
         {/* Dark mode toggle */}
         <button
